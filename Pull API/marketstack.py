@@ -1,3 +1,5 @@
+""" Christian Panici and Nancy Paul """
+
 import matplotlib.pyplot as plt
 import requests
 
