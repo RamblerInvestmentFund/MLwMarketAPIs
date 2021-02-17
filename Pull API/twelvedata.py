@@ -1,6 +1,10 @@
-from twelvedata import TDClient
+#Nicholas Barone and Brianna Chou
+#pip install twelvedata
 
-td = TDClient(apikey="YOUR_API_KEY")
+import twelveData
+from twelveData import TDClient
+
+td = TDClient(apikey="YOUR_API_KEY") #Insert your API key!
 ts = td.time_series(
     symbol="SPY",
     exchange="NYSE",
