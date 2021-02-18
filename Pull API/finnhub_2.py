@@ -10,7 +10,6 @@ Created on Thu Feb 18 15:10:21 2021
 # Just in case you need this for some reason, run what's below in terminal:
 # pip install finnhub-python
 
-
 import finnhub
 import pandas as pd
 from datetime import datetime
@@ -51,3 +50,22 @@ print(" ")
 # Convert Candlestick data to Pandas Dataframe
 print("Candlestick data as Data Frame:")
 print(pd.DataFrame(aapl_candles))
+print(" ")
+
+# Tick Data (Premium/Paid Content)
+# Will throw error if you try running this w/o right subscription
+# print(finnhub_client.stock_tick('AAPL', '2020-03-25', 500, 0))
+
+# Bid/Asking price
+print("Bid/Asking price for AAPL")
+print(finnhub_client.last_bid_ask('AAPL'))
+
+print(" ")
+
+# Crypto Candlestick Data
+print("DOGE Candlestick data:")
+doge_candles = finnhub_client.crypto_candles(symbol = 'DOGE', 
+                                     resolution = 'D', 
+                                     _from = 1590988249,
+                                     to = 1591852249)
+print(pd.DataFrame(doge_candles))
