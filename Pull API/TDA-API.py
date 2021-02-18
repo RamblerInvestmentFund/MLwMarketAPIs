@@ -5,7 +5,7 @@ import requests
 import json
 
 #### Retrieve Ticker Quote
-def retreiveTickerQuote(ticker):
+def retrieveTickerQuote(ticker):
     endpoint = 'https://api.tdameritrade.com/v1/marketdata/{stock_ticker}/quotes?'
     full_url = endpoint.format(stock_ticker=ticker)
     page = requests.get(url=full_url,
@@ -15,7 +15,7 @@ def retreiveTickerQuote(ticker):
 #### 
 
 #### Retrieve Ticker Price History
-def retreiveTickerPriceHistory(ticker):
+def retrieveTickerPriceHistory(ticker):
     endpoint = endpoint = 'https://api.tdameritrade.com/v1/marketdata/{stock_ticker}/pricehistory'
     full_url = endpoint.format(stock_ticker=ticker)
     page = requests.get(url=full_url,
@@ -25,7 +25,7 @@ def retreiveTickerPriceHistory(ticker):
 ####
 
 #### Retrieve Ticker Option Chain
-def retreiveTickerOptionChain(ticker):
+def retrieveTickerOptionChain(ticker):
     endpoint = endpoint = 'https://api.tdameritrade.com/v1/marketdata/chains?&symbol={stock_ticker}'
     full_url = endpoint.format(stock_ticker=ticker)
     page = requests.get(url=full_url,
@@ -35,6 +35,6 @@ def retreiveTickerOptionChain(ticker):
 ####
 
 #### Test Output
-print(retreiveTickerQuote('AAL'))
-print(retreiveTickerPriceHistory('AAPL'))
-print(retreiveTickerOptionChain('AMZN'))
+print(retrieveTickerQuote('AAL'))
+print(retrieveTickerPriceHistory('AAPL'))
+print(retrieveTickerOptionChain('AMZN'))
