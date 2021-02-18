@@ -5,7 +5,7 @@
 
 import twelvedata
 from twelvedata import TDClient
-td = TDClient(apikey="42659dffdec7409e9b158e709351ad53") #Insert your API key!
+td = TDClient(apikey="INSERT_API_KEY") #Insert your API key!
 
 #Function 1 - Nick
 ts = td.time_series(
