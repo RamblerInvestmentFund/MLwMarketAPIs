@@ -2,7 +2,7 @@
 """
 Created on Mon Feb 15 20:55:32 2021
 
-@author: Ashton Hansen
+@author: Ashton Hansen, Avi Patel
 """
 # Code source:
 # https://finnhub.io/docs/api/introduction
