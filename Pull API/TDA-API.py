@@ -89,3 +89,4 @@ print(retrieveSingleMarketHours('FOREX'))
 print(retrieve2Day1MinChart("APPL"))
 print(retrieveMultipleQuotes("GOOG,MSFT,APPL,PINS"))
 print(retrieveMovers('$COMPX'))
+
