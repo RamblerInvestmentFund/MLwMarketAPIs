@@ -97,6 +97,16 @@ def get_earnings(key, symbol, include_plot=False):
         plt.title(f'Yearly Gross Profit for {symbol}')
         plt.show()
 
+def getOpens(key,symb):
+    time = TimeSeries(key=key, output_format="pandas")                                            
+    data, meta = time.get_intraday(symbol=symb, interval='1min',outputsize='full')                
+    print(data['1. open'])
+    
+def getCloses(key,symb):
+    time = TimeSeries(key=key, output_format="pandas")                                            
+    data, meta = time.get_intraday(symbol=symb, interval='1min',outputsize='full')                
+    print(data['4. close'])
+    
 if __name__ == '__main__':
     get_earnings(key=mykey, symbol='TSLA', include_plot=True)
     get_crypto_monthly(key=mykey, symbol='BTC', market='CNY', include_plot=True)

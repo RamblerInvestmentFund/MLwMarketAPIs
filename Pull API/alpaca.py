@@ -39,3 +39,99 @@ print(orders)
 api.submit_order('AAPL', side='buy', qty=1, type='market', time_in_force='gtc')
 
 api.get_barset('AAPL', 'day', limit=10).df
+
+
+
+#############
+###https://github.com/alpacahq/Momentum-Trading-Example/blob/master/algo.py
+  
+import requests
+import time
+from ta import macd
+import numpy as np
+from datetime import datetime, timedelta
+from pytz import timezone
+
+
+session = requests.session()
+
+# We only consider stocks with per-share prices inside this range
+min_share_price = 2.0
+max_share_price = 13.0
+# Minimum previous-day dollar volume for a stock we might consider
+min_last_dv = 500000
+# Stop limit to default to
+default_stop = .95
+# How much of our portfolio to allocate to any one position
+risk = 0.001
+
+
+def get_1000m_history_data(symbols):
+    print('Getting historical data...')
+    minute_history = {}
+    c = 0
+    for symbol in symbols:
+        minute_history[symbol] = api.polygon.historic_agg(
+            size="minute", symbol=symbol, limit=1000
+        ).df
+        c += 1
+        print('{}/{}'.format(c, len(symbols)))
+    print('Success.')
+    return minute_history
+
+
+def get_tickers():
+    print('Getting current ticker data...')
+    tickers = api.polygon.all_tickers()
+    print('Success.')
+    assets = api.list_assets()
+    symbols = [asset.symbol for asset in assets if asset.tradable]
+    return [ticker for ticker in tickers if (
+        ticker.ticker in symbols and
+        ticker.lastTrade['p'] >= min_share_price and
+        ticker.lastTrade['p'] <= max_share_price and
+        ticker.prevDay['v'] * ticker.lastTrade['p'] > min_last_dv and
+        ticker.todaysChangePerc >= 3.5
+    )]
+
+
+def find_stop(current_value, minute_history, now):
+    series = minute_history['low'][-100:] \
+                .dropna().resample('5min').min()
+    series = series[now.floor('1D'):]
+    diff = np.diff(series.values)
+    low_index = np.where((diff[:-1] <= 0) & (diff[1:] > 0))[0] + 1
+    if len(low_index) > 0:
+        return series[low_index[-1]] - 0.01
+    return current_value * default_stop
+
+
+def run(tickers, market_open_dt, market_close_dt):
+    # Establish streaming connection
+    conn = tradeapi.StreamConn(base_url=base_url, key_id=api_key_id, secret_key=api_secret)
+
+    # Update initial state with information from tickers
+    volume_today = {}
+    prev_closes = {}
+    for ticker in tickers:
+        symbol = ticker.ticker
+        prev_closes[symbol] = ticker.prevDay['c']
+        volume_today[symbol] = ticker.day['v']
+
+    symbols = [ticker.ticker for ticker in tickers]
+    print('Tracking {} symbols.'.format(len(symbols)))
+    minute_history = get_1000m_history_data(symbols)
+
+    portfolio_value = float(api.get_account().portfolio_value)
+
+    open_orders = {}
+    positions = {}
+
+# Handle failed websocket connections by reconnecting
+def run_ws(conn, channels):
+    try:
+        conn.run(channels)
+    except Exception as e:
+        print(e)
+        conn.close()
+        run_ws(conn, channels)

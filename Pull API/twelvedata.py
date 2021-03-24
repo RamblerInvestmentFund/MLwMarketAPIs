@@ -47,3 +47,42 @@ df = ts.with_macd().with_macd(fast_period=10).with_stoch().as_json()
     "AAPL": ({'datetime': '2020-04-23 15:59:00', 'open': '275.23001', 'high': '275.25000', 'low': '274.92999', 'close': '275.01001', 'volume': '393317', 'macd_1': '-0.33538', 'macd_signal_1': '-0.24294', 'macd_hist_1': '-0.09244', 'macd_2': '-0.40894', 'macd_signal_2': '-0.29719', 'macd_hist_2': '-0.11175', 'slow_k': '4.52069', 'slow_d': '7.92871'}, {'datetime': '2020-04-23 15:58:00', 'open': '275.07001', 'high': '275.26999', 'low': '275.00000', 'close': '275.25000', 'volume': '177685', 'macd_1': '-0.31486', 'macd_signal_1': '-0.21983', 'macd_hist_1': '-0.09503', 'macd_2': '-0.38598', 'macd_signal_2': '-0.26925', 'macd_hist_2': '-0.11672', 'slow_k': '14.70578', 'slow_d': '6.82079'}, {'datetime': '2020-04-23 15:57:00', 'open': '275.07001', 'high': '275.16000', 'low': '275.00000', 'close': '275.07751', 'volume': '151169', 'macd_1': '-0.30852', 'macd_signal_1': '-0.19607', 'macd_hist_1': '-0.11245', 'macd_2': '-0.38293', 'macd_signal_2': '-0.24007', 'macd_hist_2': '-0.14286', 'slow_k': '4.55965', 'slow_d': '2.75237'}),
     "MSFT": ({'datetime': '2020-04-23 15:59:00', 'open': '171.59000', 'high': '171.64000', 'low': '171.22000', 'close': '171.42000', 'volume': '477631', 'macd_1': '-0.12756', 'macd_signal_1': '-0.10878', 'macd_hist_1': '-0.01878', 'macd_2': '-0.15109', 'macd_signal_2': '-0.12915', 'macd_hist_2': '-0.02193', 'slow_k': '20.95244', 'slow_d': '26.34919'}, {'datetime': '2020-04-23 15:58:00', 'open': '171.41000', 'high': '171.61000', 'low': '171.33501', 'close': '171.61000', 'volume': '209594', 'macd_1': '-0.12440', 'macd_signal_1': '-0.10408', 'macd_hist_1': '-0.02032', 'macd_2': '-0.14786', 'macd_signal_2': '-0.12367', 'macd_hist_2': '-0.02419', 'slow_k': '39.04785', 'slow_d': '23.80945'}, {'datetime': '2020-04-23 15:57:00', 'open': '171.34500', 'high': '171.48000', 'low': '171.25999', 'close': '171.39999', 'volume': '142450', 'macd_1': '-0.13791', 'macd_signal_1': '-0.09900', 'macd_hist_1': '-0.03891', 'macd_2': '-0.16800', 'macd_signal_2': '-0.11762', 'macd_hist_2': '-0.05037', 'slow_k': '19.04727', 'slow_d': '14.92063'})
 }
+
+#Function 4: Return array of cryptocurrency pairs available. - Brianna
+ts = td.time_series(
+	symbol = "BTC/USD",
+	interval = "5min",
+	available_exchanges = ["ABCC", "Allcoin", "BTC-Alpha", "BTCTurk", "Bibox", "BigONE", "Binance", "Bit-Z", "BitForex", "BitMEX", "BitMart", "BitMax", "BitStamp", "Bitex.la", "Bitfinex", "Bitibu", "Bitinka", "Bitlish", "Bitrue", "Bittrex", "Btcwinex", "C2CX", "CBX", "CEX.IO", "COINEGG", "Cobinhood", "CoinAll", "CoinField", "CoinHub", "CoinTiger", "Coinbase Pro", "Coinbene", "CoinsBank", "Coinsbit", "CryptalDash", "DragonEX", "EXX", "Exmo", "Exrates", "GDAX", "Gate.io", "Gemini", "HitBTC", "Huobi", "IDAX", "IDCM", "Independent Reserve", "Kraken", "Kryptono", "Kucoin", "LBank", "LakeBTC", "Livecoin", "OKCoin", "OKEx", "OOOBTC", "Panxora", "Poloniex", "QUOINE", "SIMEX", "Tidex", "Upbit", "YoBit", "ZB.COM", "bitFlyer", "itBit", "n.exchange", "p2pb2b", "xBTCe"],
+	currency_base = "Bitcoin",
+	currency_quote = "US Dollar",
+)
+ts.with_macd().as_json()
+
+#Function 5: pull stocks meta for equities. - Brianna
+ts = td.time_series(
+	symbol = "AAPL",
+	interval = "1min",
+	currency = "USD",
+	exchange_timezone = "America/New_York",
+	exchange = "NASDAQ",
+	type = "Common Stock"
+)
+ts.with_macd().as_json()
+
+#Function 6: Technical indicators - Brianna
+ts = td.time_series(
+    symbol="ETH/BTC",
+    exchange="Huobi",
+    interval="5min",
+    outputsize=22,
+    timezone="America/New_York",
+)
+#Returns: STOCH(14, 1, 3, SMA, SMA), TSF(close, 9)
+ts.without_ohlc().with_stoch().with_tsf().as_json()
+
+#Function 7: Bratch requests but with .as_pandas() - Brianna
+	#This will output a 3D Dataframe with multindex for (symbol, datetime)
+ts = td.time_series(symbol='AAPL,MSFT', interval="1min", outputsize=3)
+df = ts.with_macd().with_macd(fast_period=10).with_stoch().as_pandas()
+df.loc['AAPL']
+df.columns
