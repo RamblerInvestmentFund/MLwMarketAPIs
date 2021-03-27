@@ -138,12 +138,15 @@ def write_15min_csv(symbols):
         Timestamp as unique key
         Includes open, high, low, close, volume, RSI"""
     for symbol in symbols:
+        # Get latest data and tack on RSI data to it
         latest_data = getData(symb=symbol, interval='15min')
         rsi_data, _, _ = get_rsi(symbol=symbol, interval='15min', time_period=60, series_type='open', include_plot=False)
         latest_data = pd.merge(latest_data, rsi_data, how='inner', left_index=True, right_index=True)
+        # Try to read file if already exists so we can add the new info on
         try:
             old_data = pd.read_csv(f'Christian Stock Data/{symbol}_data.csv')
             final_data = pd.concat([old_data, latest_data]).drop_duplicates().set_index('date')
+        # Otherwise we just write a new file
         except:
             final_data = latest_data
         finally:
