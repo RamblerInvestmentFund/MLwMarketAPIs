@@ -1,5 +1,8 @@
 #Aditi and Dana
 
+#installation: pip install avapi
+import avapi as aa 
+
 #set up environment
 from time import sleep
 import pandas as pd
@@ -107,6 +110,28 @@ def getCloses(key,symb):
     time = TimeSeries(key=key, output_format="pandas")                                            
     data, meta = time.get_intraday(symbol=symb, interval='1min',outputsize='full')                
     print(data['4. close'])
+ 
+#create csv for data pulled from alphavantage
+def create_csv():
+    
+    #data functions specified in alphavantage.py
+    data_calls = [
+        {
+        #pull for intraday data: open, high, low, close, volume
+         'function':'TIME_SERIES_INTRADAY', 
+         'symbol': 'TSLA',
+         'interval': '1min',
+         'output_size': 'compact',
+         'datatype': 'csv',
+         'apikey': mykey,
+        }
+    ]
+
+    for i in range(len(data_calls)):
+        save_to = 'alphavantage.csv'
+        data_calls = aa.get_data(save_to=save_to, **data_calls[i])
+
+create_csv()
     
 def write_15min_csv(symbols):
     """Write csv with 15-min granularity for a list of symbols (one csv per symbol)
