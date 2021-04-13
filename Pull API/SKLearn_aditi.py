@@ -38,3 +38,4 @@ score = accuracy_score(y_test, predictions)                                     
 print(score)
 
 #Notes: accuracy score is 0 on every run, picked a random model to use from the library, not really sure what its doing
+
