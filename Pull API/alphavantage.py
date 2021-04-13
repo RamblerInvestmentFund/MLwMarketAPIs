@@ -1,8 +1,11 @@
 #Aditi and Dana
 
-#set up environment
+#installation: pip install avapi
+#import avapi as aa 
 
-import pandas
+#set up environment
+from time import sleep
+import pandas as pd
 import matplotlib.pyplot as plt
 from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.foreignexchange import ForeignExchange
@@ -13,16 +16,17 @@ from pprint import pprint
 
 #set API Key and Symbol
 
-mykey = 'YOUR_API_KEY'
+mykey = 'CSHJZ0YXQM9E66TP'
 mysymb = "TSLA"                                                                                   #other stock Symbols: '' '' '' etc
 
 
 #Get intraday data and metadata
-def getData(key,symb):
-    time = TimeSeries(key= key, output_format= "pandas")                                          #create TimeSeries object and Make API Call
-    data, meta = time.get_intraday(symbol=symb , interval='1min', outputsize= 'full')
-    print(meta)
-    print(data)
+def getData(symb, interval):
+    time = TimeSeries(key=mykey, output_format="pandas")                                          #create TimeSeries object and Make API Call
+    data, meta = time.get_intraday(symbol=symb , interval=interval, outputsize= 'full')
+    # print(meta)
+    # print(data)
+    return data
 
 
 #Get time stock trade is at it's high and low for a day
@@ -57,11 +61,11 @@ def fxData(key):
 ################ Christian & Nancy #################
 ####################################################
 
-def get_rsi(key, symbol, interval, time_period, series_type, include_plot=False):
+def get_rsi(symbol, interval, time_period, series_type, include_plot=False):
     """Get RSI data for a given ticker. If requested, plot returned data marked 
         with two standard deviations above/below avg
         Return: RSI dataframe, mean RSI over period, std deviation of RSI over period"""
-    ti = TechIndicators(key=key, output_format='pandas')
+    ti = TechIndicators(key=mykey, output_format='pandas')
     data, meta_data = ti.get_rsi(symbol=symbol, interval=interval, time_period=time_period, series_type=series_type)
     mean = data['RSI'].mean()
     std = data['RSI'].std()
@@ -106,8 +110,42 @@ def getCloses(key,symb):
     time = TimeSeries(key=key, output_format="pandas")                                            
     data, meta = time.get_intraday(symbol=symb, interval='1min',outputsize='full')                
     print(data['4. close'])
+ 
+#create csv for data pulled from alphavantage
+def create_csv():
     
+    #data functions specified in alphavantage.py
+    data_calls = [
+        {
+        #pull for intraday data: open, high, low, close, volume
+         'function':'TIME_SERIES_INTRADAY', 
+         'symbol': 'TSLA',
+         'interval': '1min',
+         'output_size': 'compact',
+         'datatype': 'csv',
+         'apikey': mykey,
+        }
+    ]
+
+    for i in range(len(data_calls)):
+        save_to = 'alphavantage.csv'
+        data_calls = aa.get_data(save_to=save_to, **data_calls[i])
+
+#create_csv()
+    
+def write_15min_csv(symbols):
+    """Write csv with 15-min granularity for a list of symbols (one csv per symbol)
+        Timestamp as unique key
+        Includes open, high, low, close, volume"""
+    for symbol in symbols:
+        latest_data = getData(symb=symbol, interval='15min')
+        print(f'Writing {symbol} data to csv...')
+        latest_data.to_csv(f'Christian Stock Data/{symbol}_data.csv', header=True, index=True)
+        print('Done. Waiting to avoid API limit...')
+        sleep(20)
+
 if __name__ == '__main__':
-    get_earnings(key=mykey, symbol='TSLA', include_plot=True)
-    get_crypto_monthly(key=mykey, symbol='BTC', market='CNY', include_plot=True)
-    get_rsi(key=mykey, symbol='TSLA', interval='60min', time_period=60, series_type='open', include_plot=True)
+    # get_earnings(key=mykey, symbol='TSLA', include_plot=True)
+    # get_crypto_monthly(key=mykey, symbol='BTC', market='CNY', include_plot=True)
+    symbols = ['MSFT', 'SNAP', 'TWTR'] 
+    write_15min_csv(symbols=symbols)
